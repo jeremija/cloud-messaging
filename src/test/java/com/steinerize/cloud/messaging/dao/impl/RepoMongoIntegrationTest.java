@@ -19,11 +19,12 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.util.StringUtils;
 
 import com.steinerize.cloud.messaging.config.MongoConfig;
+import com.steinerize.cloud.messaging.config.PropertiesConfig;
 import com.steinerize.cloud.messaging.dao.Repo;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(
-		classes={MongoConfig.class},
+		classes={PropertiesConfig.class, MongoConfig.class},
 		loader=AnnotationConfigContextLoader.class)
 public class RepoMongoIntegrationTest {
 	

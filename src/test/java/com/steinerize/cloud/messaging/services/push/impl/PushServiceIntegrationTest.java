@@ -23,6 +23,8 @@ import com.steinerize.cloud.messaging.dao.UserRepo;
 import com.steinerize.cloud.messaging.dao.impl.UserRepoMongo;
 import com.steinerize.cloud.messaging.domain.Device;
 import com.steinerize.cloud.messaging.domain.User;
+import com.steinerize.cloud.messaging.domain.cloud.google.GcmAuthData;
+import com.steinerize.cloud.messaging.http.impl.JsonHttpRequestFactory;
 import com.steinerize.cloud.messaging.services.push.PushService;
 
 /**
@@ -31,8 +33,16 @@ import com.steinerize.cloud.messaging.services.push.PushService;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(
-	classes={PropertiesConfig.class, MongoConfig.class, UserRepoMongo.class, 
-			PushServiceImpl.class}, 
+	classes={
+		PropertiesConfig.class, 
+		MongoConfig.class, 
+		UserRepoMongo.class,
+		JsonHttpRequestFactory.class,
+		GcmResponseHandler.class,
+		GcmAuthData.class, 
+		GcmService.class, 
+		PushServiceImpl.class
+	}, 
 	loader=AnnotationConfigContextLoader.class)
 public class PushServiceIntegrationTest {
 	
