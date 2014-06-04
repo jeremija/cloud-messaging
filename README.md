@@ -1,4 +1,4 @@
-# cloud-messaging
+# Cloud Messaging REST API
 
 Java REST API for Google Cloud Messaging and Apple Push Notification services. Uses MongoDB for persistent storage of device tokens.
 
@@ -6,14 +6,14 @@ Java REST API for Google Cloud Messaging and Apple Push Notification services. U
 
 *Note: Apple Push Notifications service support not yet implemented*
 
-## configuration
+## Configuration
 Create a file `/src/main/resources/cloud.properties`. It should contain the following content:
 
 ```
 gcm.api.key = *your GCM api key*
 ```
 
-## usage
+## Usage
 After you have compiled the Maven project and created the `cloud.properties` config file, you should be able to publish the application to Tomcat 7.
 
 The following REST API is exposed:
