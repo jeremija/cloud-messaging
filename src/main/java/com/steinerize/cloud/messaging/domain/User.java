@@ -1,5 +1,6 @@
 package com.steinerize.cloud.messaging.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 
@@ -20,8 +21,26 @@ public class User {
 		this.token = token;
 	}
 	
-	@Id public String id;
-	@Indexed public String name;
+	/**
+	 * Database id
+	 */
+	@JsonIgnore
+	@Id 
+	public String id;
+	/**
+	 * User name
+	 */
+	@Indexed 
+	public String name;
+	
+	/**
+	 * Device associated with the {@link #token}
+	 */
 	public Device device;
-	@Indexed(unique = true) public String token;
+	
+	/**
+	 * Token associated with the {@link #device}	
+	 */
+	@Indexed(unique = true) 
+	public String token;
 }

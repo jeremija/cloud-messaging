@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Holds the tokens per platform for notification servers. Also holds the 
+ * {@link PushMessage} data.
  * @author jsteiner
  *
  */

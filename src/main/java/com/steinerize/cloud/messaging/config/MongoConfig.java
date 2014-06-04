@@ -25,24 +25,6 @@ public class MongoConfig {
 	
 	@Autowired
 	Properties dbProperties;
-//	
-//	@Bean
-//	public Properties dbProperties() {
-//		Resource resource = new ClassPathResource("/db.properties");
-//		
-//		try {
-//			return PropertiesLoaderUtils.loadProperties(resource);			
-//		}
-//		catch(IOException e) {
-//			throw new IllegalStateException("unable to load /db.properties", e);
-//		}
-//	}
-	
-//	@Bean
-//	public MongoClient mongoClient() {
-//		LOG.info("initiating mongo client");
-//		return new MongoClient("localhost", 27017);
-//	}
 	
 	@Bean 
 	public MongoClient mongoClient() {

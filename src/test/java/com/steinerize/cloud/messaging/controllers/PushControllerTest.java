@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.steinerize.cloud.messaging.controllers.PushController;
+import com.steinerize.cloud.messaging.domain.Device;
 import com.steinerize.cloud.messaging.domain.PushMessage;
 import com.steinerize.cloud.messaging.domain.User;
 import com.steinerize.cloud.messaging.services.push.PushService;
@@ -30,20 +31,20 @@ public class PushControllerTest {
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		controller = new PushController(pushService);
-		user = new User();
 		msg = new PushMessage();
 	}
 	
 	@Test
 	public void register_should_call_pushService_register() {
+		user = new User();
+		
 		controller.register(user);
 		verify(pushService, Mockito.only()).register(user);
 	}
 	
 	@Test
 	public void unregister_should_call_pushService_unregister() {
-		user.name = "my user";
-		user.token = "12345";
+		user = new User("my user", Device.ANDROID, "12345");
 		
 		controller.unregister(user);
 		verify(pushService, Mockito.only()).unregister(user.name, user.token);

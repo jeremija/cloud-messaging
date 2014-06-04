@@ -1,5 +1,10 @@
 package com.steinerize.cloud.messaging.domain;
 
+/**
+ * Defines the data to be send to the cloud messaging server.
+ * @author jsteiner
+ *
+ */
 public class PushData {
 	
 	public PushData() {
