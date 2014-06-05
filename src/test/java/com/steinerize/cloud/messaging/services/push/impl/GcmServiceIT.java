@@ -24,8 +24,12 @@ import com.steinerize.cloud.messaging.services.push.CloudMessagingService;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(
-	classes={PropertiesConfig.class, JsonHttpRequestFactory.class,
-			GcmResponseHandler.class, GcmAuthData.class, GcmService.class}, 
+	classes={PropertiesConfig.class, 
+		JsonHttpRequestFactory.class,
+		GcmResponseHandler.class, 
+		GcmAuthData.class, 
+		GcmService.class
+	}, 
 	loader=AnnotationConfigContextLoader.class)
 public class GcmServiceIT {
 	
