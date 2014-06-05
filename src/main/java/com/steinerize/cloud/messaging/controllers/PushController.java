@@ -1,8 +1,11 @@
 package com.steinerize.cloud.messaging.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.steinerize.cloud.messaging.domain.PushMessage;
 import com.steinerize.cloud.messaging.domain.User;
@@ -13,13 +16,20 @@ import com.steinerize.cloud.messaging.services.push.PushService;
  * @author jsteiner
  *
  */
+@Controller
 @RequestMapping("/push")
 public class PushController {
 	
 	private final PushService pushService;
 	
+	@Autowired
 	public PushController(PushService pushService) {
 		this.pushService = pushService;
+	}
+	
+	@RequestMapping(value = "test", method = RequestMethod.GET)
+	public @ResponseBody String test(@RequestBody String string) {
+		return "your request was " + string;
 	}
 	
 	/**
@@ -28,7 +38,7 @@ public class PushController {
 	 * @see {@link PushService#register(String, String)}
 	 * @param user
 	 */
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value = "register", method = RequestMethod.POST)
 	public void register(@RequestBody User user) {
 		this.pushService.register(user);
 	}
@@ -38,7 +48,7 @@ public class PushController {
 	 * @see PushService#unregister(String, String)
 	 * @param user
 	 */
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value = "unregister", method = RequestMethod.POST)
 	public void unregister(@RequestBody User user) {
 		this.pushService.unregister(user.name, user.token);
 	}
@@ -50,7 +60,7 @@ public class PushController {
 	 * @see PushService#send(PushMessage)
 	 * @param msg
 	 */
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value = "send", method = RequestMethod.POST)
 	public void send(@RequestBody PushMessage msg) {
 		this.pushService.send(msg);
 	}
@@ -61,7 +71,7 @@ public class PushController {
 	 * @see PushService#sendToUser(UserMessage)
 	 * @param userMessage
 	 */
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value = "sendToUser", method = RequestMethod.POST)
 	public void sendToUser(@RequestBody UserMessage userMessage) {
 		this.pushService.sendToUser(userMessage);
 	}

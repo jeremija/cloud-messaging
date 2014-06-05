@@ -47,17 +47,8 @@ public class GcmService implements CloudMessagingService {
 		
 		return httpReq;
 	}
-
-	@Override
-	public void send(PushMessage pushMessage) {
-		LOG.debug("send() START resourceUrl=" + GCM_SEND_URL);
-		
-		if (ArrayUtil.isEmpty(pushMessage.androidTokens)) {
-			LOG.debug("send() skipping pushMessage " + pushMessage + 
-					" - no android tokens");
-			return;
-		}
-		
+	
+	protected void sendGCM(PushMessage pushMessage) {
 		GcmRequest gcmRequest = GcmRequest.fromPushMessage(pushMessage);
 		HttpReq httpReq = createHttpRequest(gcmRequest);
 		
@@ -74,7 +65,20 @@ public class GcmService implements CloudMessagingService {
 			gcmResponse = httpReq.getResponseAsObject(GcmResponse.class);
 		}
 		
-		responseHandler.handle(status, gcmRequest, gcmResponse);
+		responseHandler.handle(status, gcmRequest, gcmResponse);		
+	}
+
+	@Override
+	public void send(PushMessage pushMessage) {
+		LOG.debug("send() START, pushMessage=" + pushMessage + 
+				",  resourceUrl=" + GCM_SEND_URL);
+		
+		if (ArrayUtil.isEmpty(pushMessage.androidTokens)) {
+			LOG.debug("send() skipping pushMessage - no android tokens");
+			return;
+		}
+		
+		sendGCM(pushMessage);
 		
 		LOG.debug("send() DONE");
 	}

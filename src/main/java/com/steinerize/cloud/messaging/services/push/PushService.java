@@ -24,11 +24,11 @@ public interface PushService {
 	 * Pushes the message to specific device tokens
 	 * @param pushMessage
 	 */
-	public void send(PushMessage pushMessage);
+	public int send(PushMessage pushMessage);
 	
 	/**
 	 * Pushes the message to a specific user
 	 * @param pushMessage
 	 */
-	public void sendToUser(UserMessage pushData);
+	public int sendToUser(UserMessage pushData);
 }

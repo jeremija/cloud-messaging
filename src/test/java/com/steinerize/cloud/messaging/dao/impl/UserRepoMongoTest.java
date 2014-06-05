@@ -6,6 +6,8 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +15,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -22,6 +22,8 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import com.steinerize.cloud.messaging.dao.UserRepo;
 import com.steinerize.cloud.messaging.domain.User;
+import com.steinerize.cloud.messaging.test.mockito.util.GenericAnswer;
+import com.steinerize.cloud.messaging.test.mockito.util.QueryValidator;
 
 /**
  * @author jsteiner
@@ -35,7 +37,7 @@ public class UserRepoMongoTest {
 	
 	@Before
 	public void setup() {
-		MockitoAnnotations.initMocks(this);
+		initMocks(this);
 		repo = new UserRepoMongo(template);
 	}
 	
@@ -95,35 +97,28 @@ public class UserRepoMongoTest {
 		verify(template, only()).remove(any(Query.class), eq(User.class));
 	}
 	
+	private Query createFindByNamesQuery() {
+		Query query = new Query();
+		Criteria[] or = {
+				Criteria.where("name").is("name1"),
+				Criteria.where("name").is("name2"),
+				Criteria.where("name").is("name3")
+		};
+		query.addCriteria(new Criteria().orOperator(or));
+		return query;
+	}
+	
 	@Test
 	public void findByNames_should_find_users_with_following_names() {
 		final List<User> testUsers = new ArrayList<>();
-		
-		Answer<List<User>> answer = new Answer<List<User>>() {
-			@Override
-			public List<User> answer(InvocationOnMock invocation) 
-					throws Throwable
-			{
-				Query query = (Query) invocation.getArguments()[0];
-				
-				Query query1 = new Query();
-				Criteria[] or = {
-						Criteria.where("name").is("name1"),
-						Criteria.where("name").is("name2"),
-						Criteria.where("name").is("name3")
-				};
-				query1.addCriteria(new Criteria().orOperator(or));
-				
-				assertEquals("query not validated", query1, query);
-				
-				return testUsers;
-			}
-		};
-		
-		doAnswer(answer).when(template).find(any(Query.class), eq(User.class));
+
+		GenericAnswer<List<User>> answr = new GenericAnswer<>(testUsers);
+		when(template.find(any(Query.class), eq(User.class))).thenAnswer(answr);
 		
 		List<User> users = repo.findByNames("name1", "name2", "name3");
 		
+		assertEquals("should create a valid query", 
+				createFindByNamesQuery(), (Query) answr.getArguments()[0]);
 		assertEquals(testUsers, users);
 	}
 	

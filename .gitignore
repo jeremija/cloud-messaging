@@ -3,3 +3,5 @@
 .project
 target
 src/main/resources/cloud.properties
+src/test/node/node_modules
+*.swp

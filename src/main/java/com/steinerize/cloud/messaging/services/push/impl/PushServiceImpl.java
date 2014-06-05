@@ -13,6 +13,7 @@ import com.steinerize.cloud.messaging.domain.Device;
 import com.steinerize.cloud.messaging.domain.PushMessage;
 import com.steinerize.cloud.messaging.domain.User;
 import com.steinerize.cloud.messaging.domain.UserMessage;
+import com.steinerize.cloud.messaging.services.push.CloudMessagingService;
 import com.steinerize.cloud.messaging.services.push.PushService;
 
 /**
@@ -27,11 +28,18 @@ public class PushServiceImpl implements PushService {
 	private final UserRepo repository;
 	
 	private final GcmService gcmService;
+	private final AppleService appleService;
+	
+	public static int STATUS_ERROR_GCM = 1;
+	public static int STATUS_ERROR_APPLE = 3;
+	public static int STATUS_OK = 0;
 	
 	@Autowired
-	public PushServiceImpl(UserRepo repository, GcmService gcmService) {
+	public PushServiceImpl(UserRepo repository, GcmService gcmService, 
+			AppleService appleService) {
 		this.repository = repository;
 		this.gcmService = gcmService;
+		this.appleService = appleService;
 	}
 
 	@Override
@@ -47,11 +55,44 @@ public class PushServiceImpl implements PushService {
 		}
 		this.repository.removeByName(name);
 	}
+	
+	private int sendGCM(PushMessage pushMessage) {
+		if (gcmService == null) {
+			LOG.warn("GCM service disabled, skipping GCM send");
+			return STATUS_OK;
+		}
+		
+		return sendMessage(gcmService, pushMessage, STATUS_ERROR_GCM);
+	}
+	
+	private int sendAPN(PushMessage pushMessage) {
+		if (appleService == null) {
+			LOG.warn("APN service disabled, skipping APN send");
+			return STATUS_OK;
+		}
+		
+		return sendMessage(gcmService, pushMessage, STATUS_ERROR_APPLE);
+	}
+	
+	private int sendMessage(CloudMessagingService service, 
+			PushMessage pushMessage, int errorCode) 
+	{
+		try {
+			service.send(pushMessage);
+			return STATUS_OK;
+		}
+		catch(Exception e) {
+			LOG.error("Error sending GCM", e);
+			return errorCode;
+		}
+	}
 
 	@Override
-	public void send(PushMessage pushMessage) {
-		gcmService.send(pushMessage);			
-		LOG.warn("apple cloud notification service not yet implemented");
+	public int send(PushMessage pushMessage) {
+		int gcmResult = sendGCM(pushMessage);
+		int apnResult = sendAPN(pushMessage);
+		
+		return gcmResult | apnResult;
 	}
 	
 	protected void processUser(PushMessage pushMessage, User user) {
@@ -78,9 +119,9 @@ public class PushServiceImpl implements PushService {
 	}
 
 	@Override
-	public void sendToUser(UserMessage userMessage) {
+	public int sendToUser(UserMessage userMessage) {
 		PushMessage pushMessage = convertToPushMessage(userMessage);
-		send(pushMessage);
+		return send(pushMessage);
 	}
 	
 }

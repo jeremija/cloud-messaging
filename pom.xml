@@ -68,6 +68,11 @@
     	<artifactId>http-request</artifactId>
     	<version>5.6</version>
     </dependency>
+    <dependency>
+    	<groupId>com.notnoop.apns</groupId>
+    	<artifactId>apns</artifactId>
+    	<version>0.2.3</version>
+    </dependency>
   </dependencies>
   <build>
     <finalName>reqman</finalName>
