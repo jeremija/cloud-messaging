@@ -44,7 +44,7 @@ import com.steinerize.cloud.messaging.services.push.PushService;
 		PushServiceImpl.class
 	}, 
 	loader=AnnotationConfigContextLoader.class)
-public class PushServiceIntegrationTest {
+public class PushServiceIT {
 	
 	private static final String USER_NAME = "test-user";
 	

@@ -26,7 +26,7 @@ import com.steinerize.cloud.messaging.dao.Repo;
 @ContextConfiguration(
 		classes={PropertiesConfig.class, MongoConfig.class},
 		loader=AnnotationConfigContextLoader.class)
-public class RepoMongoIntegrationTest {
+public class RepoMongoIT {
 	
 	@Autowired
 	MongoTemplate template;

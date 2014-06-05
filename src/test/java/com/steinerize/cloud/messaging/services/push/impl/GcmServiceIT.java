@@ -27,7 +27,7 @@ import com.steinerize.cloud.messaging.services.push.CloudMessagingService;
 	classes={PropertiesConfig.class, JsonHttpRequestFactory.class,
 			GcmResponseHandler.class, GcmAuthData.class, GcmService.class}, 
 	loader=AnnotationConfigContextLoader.class)
-public class GcmServiceIntegrationTest {
+public class GcmServiceIT {
 	
 	@Autowired
 	@Qualifier("gcmService")
