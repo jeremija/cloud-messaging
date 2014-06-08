@@ -12,7 +12,7 @@ import com.steinerize.cloud.messaging.domain.cloud.CloudResponse;
  */
 public class GcmResponse extends CloudResponse {
 	
-	public static class Result {
+	public static class GcmResult {
 		@JsonProperty("message_id")
 		public String messageId;
 		
@@ -32,6 +32,6 @@ public class GcmResponse extends CloudResponse {
 	@JsonProperty("canonical_ids")
 	public int canonicalIds;
 	
-	public List<Result> results;
+	public List<GcmResult> results;
 	
 }

@@ -2,13 +2,16 @@ package com.steinerize.cloud.messaging.services.push.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.steinerize.cloud.messaging.dao.UserRepo;
+import com.steinerize.cloud.messaging.domain.User;
 import com.steinerize.cloud.messaging.domain.cloud.CloudRequest;
 import com.steinerize.cloud.messaging.domain.cloud.CloudResponse;
 import com.steinerize.cloud.messaging.domain.cloud.google.GcmRequest;
 import com.steinerize.cloud.messaging.domain.cloud.google.GcmResponse;
-import com.steinerize.cloud.messaging.domain.cloud.google.GcmResponse.Result;
+import com.steinerize.cloud.messaging.domain.cloud.google.GcmResponse.GcmResult;
 import com.steinerize.cloud.messaging.services.push.CloudResponseHandler;
 
 @Component
@@ -16,6 +19,17 @@ public class GcmResponseHandler implements CloudResponseHandler {
 	
 	private static final Log LOG = LogFactory.getLog(GcmResponseHandler.class);
 	
+	private final UserRepo userRepo;
+	
+	@Autowired
+	public GcmResponseHandler(UserRepo userRepo) {
+		this.userRepo = userRepo;
+	}
+	
+	/**
+	 * @throws IllegalStateException if status == 200, but gcmResponse == null
+	 * @param res
+	 */
 	private void checkResponse(GcmResponse res) {
 		if (res == null) {
 			throw new IllegalStateException("status=200, but gcmResponse null");
@@ -24,17 +38,27 @@ public class GcmResponseHandler implements CloudResponseHandler {
 	
 	private void processResponse(GcmRequest req, GcmResponse res) {
 		for (int i = 0; i < res.results.size(); i++) {
-			Result result = res.results.get(i);
-			String regId = req.getRegistrationIds().get(i);
+			GcmResult gcmResult = res.results.get(i);
+			String token = req.getRegistrationIds().get(i);
 			
-			checkForErrors(regId, result);
+			checkForErrors(token, gcmResult);
 		}		
 	}
 	
-	private void checkForErrors(String regId, Result result) {
+	private void replaceUserToken(String token, String newToken) {
+		User user = userRepo.findByToken(token);
+		user.token = newToken;
+		userRepo.save(user);
+	}
+	
+	private void removeUser(String token) {
+		userRepo.removeByToken(token);
+	}
+	
+	private void checkForErrors(String token, GcmResult result) {
 		if (result.messageId != null && result.regId != null) {
-			LOG.warn("replacing " + regId + " with " + result.regId);
-			// TODO replace database regId with result.registratoinIds
+			LOG.warn("replacing " + token + " with " + result.regId);
+			replaceUserToken(token, result.regId);
 			return;
 		}
 		
@@ -42,14 +66,14 @@ public class GcmResponseHandler implements CloudResponseHandler {
 			return;
 		}
 		
-		LOG.error("Unable to send push msg to regId=" + regId + ". " + 
+		LOG.error("Unable to send push msg to regId=" + token + ". " + 
 				"Error=" + result.error);
 		
 		if ("Unavailable".equals(result.error)) {
 			return;
 		}
 			
-		// TODO remove this regId from databases
+		removeUser(token);
 	}
 
 	@Override
