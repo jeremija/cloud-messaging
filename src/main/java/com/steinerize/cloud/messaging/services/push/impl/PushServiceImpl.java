@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import com.steinerize.cloud.messaging.dao.UserRepo;
@@ -34,9 +35,19 @@ public class PushServiceImpl implements PushService {
 	public static int STATUS_ERROR_APPLE = 3;
 	public static int STATUS_OK = 0;
 	
+	/**
+	 * @param repository
+	 * @param gcmService
+	 * @param appleService
+	 * @throws IllegalArgumentException if any of the parameters is null
+	 */
 	@Autowired
 	public PushServiceImpl(UserRepo repository, GcmService gcmService, 
 			AppleService appleService) {
+		Assert.notNull(repository);
+		Assert.notNull(gcmService);
+		Assert.notNull(appleService);
+		
 		this.repository = repository;
 		this.gcmService = gcmService;
 		this.appleService = appleService;

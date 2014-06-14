@@ -18,6 +18,10 @@ import com.steinerize.cloud.messaging.domain.User;
 @Service
 public class UserRepoMongo extends RepoMongo<User> implements UserRepo {
 	
+	/**
+	 * @param template
+	 * @throws IllegalArgumentException if template is null
+	 */
 	@Autowired
 	public UserRepoMongo(MongoTemplate template) {
 		super(template, User.class);

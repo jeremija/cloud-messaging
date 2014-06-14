@@ -25,6 +25,8 @@ public class JsonHttpRequest implements HttpReq {
 	 * Creates a new request.
 	 * @param resourceUrl
 	 * @param reqFactory
+	 * @throws IllegalArgumentException if resourceUrl undefined, or if 
+	 * reqFactory is null
 	 */
 	public JsonHttpRequest(String resourceUrl, HttpRequestFactory reqFactory) {
 		Assert.hasText(resourceUrl, "resourceUrl must be defined");

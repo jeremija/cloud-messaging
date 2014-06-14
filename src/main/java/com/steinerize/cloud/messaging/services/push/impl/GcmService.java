@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.steinerize.cloud.messaging.domain.PushMessage;
 import com.steinerize.cloud.messaging.domain.cloud.google.GcmAuthData;
@@ -30,11 +31,21 @@ public class GcmService implements CloudMessagingService {
 	private final GcmResponseHandler responseHandler;
 	private final JsonHttpRequestFactory jsonHttpRequestFactory;
 	
+	/**
+	 * @param authData
+	 * @param jsonHttpRequestFactory
+	 * @param handler
+	 * @throws IllegalArgumentException if any of the parameters is null
+	 */
 	@Autowired
 	public GcmService(GcmAuthData authData, 
 			JsonHttpRequestFactory jsonHttpRequestFactory, 
 			GcmResponseHandler handler)
 	{
+		Assert.notNull(authData);
+		Assert.notNull(jsonHttpRequestFactory);
+		Assert.notNull(handler);
+		
 		this.authData = authData;
 		this.responseHandler = handler;
 		this.jsonHttpRequestFactory = jsonHttpRequestFactory;

@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import com.steinerize.cloud.messaging.dao.UserRepo;
 import com.steinerize.cloud.messaging.domain.User;
@@ -21,8 +22,13 @@ public class GcmResponseHandler implements CloudResponseHandler {
 	
 	private final UserRepo userRepo;
 	
+	/**
+	 * @param userRepo
+	 * @throws IllegalArgumentException if any of the parameters is null
+	 */
 	@Autowired
 	public GcmResponseHandler(UserRepo userRepo) {
+		Assert.notNull(userRepo, "userRepo must be defined");
 		this.userRepo = userRepo;
 	}
 	

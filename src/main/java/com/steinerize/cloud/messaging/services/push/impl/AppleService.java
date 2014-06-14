@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;
@@ -24,8 +25,13 @@ public class AppleService implements CloudMessagingService {
 	
 	private final ApnsService apnsService; 
 	
+	/**
+	 * @param apnsService
+	 * @throws IllegalArgumentException if any of the parameters is null
+	 */
 	@Autowired
 	public AppleService(ApnsService apnsService) {
+		Assert.notNull(apnsService, "apnsService must be defined");
 		this.apnsService = apnsService;
 	}
 	

@@ -3,6 +3,7 @@ package com.steinerize.cloud.messaging.dao.impl;
 import java.util.List;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.util.Assert;
 
 import com.steinerize.cloud.messaging.dao.Repo;
 
@@ -16,7 +17,15 @@ public class RepoMongo<T> implements Repo<T> {
 	protected final MongoTemplate template;
 	private final Class<T> entityType;
 
+	/**
+	 * @param mongoTemplate
+	 * @param entityType
+	 * @throws IllegalArgumentException if any of the parameters is null
+	 */
 	public RepoMongo(MongoTemplate mongoTemplate, Class<T> entityType) {
+		Assert.notNull(mongoTemplate, "mongoTemplate must be defined");
+		Assert.notNull(entityType, "entityType must be defined");
+		
 		this.template = mongoTemplate;
 		this.entityType = entityType;
 	}

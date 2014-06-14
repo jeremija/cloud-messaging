@@ -2,6 +2,7 @@ package com.steinerize.cloud.messaging.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,8 +23,13 @@ public class PushController {
 	
 	private final PushService pushService;
 	
+	/**
+	 * @param pushService
+	 * @throws IllegalArgumentException if any of the parameters is null
+	 */
 	@Autowired
 	public PushController(PushService pushService) {
+		Assert.notNull(pushService, "pushService must be defined");
 		this.pushService = pushService;
 	}
 	
